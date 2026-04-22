@@ -1,0 +1,6 @@
+groq
+mem0ai
+rich
+python-dotenv
+pytest
+flask
