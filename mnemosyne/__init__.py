@@ -1,7 +1,8 @@
-"""Mnemosyne — memory-poisoning defence middleware for AI agents."""
+"""mnemosyne — memory-poisoning guard for AI agents (student project).
 
-__version__ = "0.1.0"
-__author__ = "Mnemosyne"
+Import the two things you need:
+    from mnemosyne.guard import MemoryGuard
+    from mnemosyne.ledger import Ledger
+"""
 
-# from mnemosyne.guard import MemoryGuard
-# from mnemosyne.ledger import Ledger
+__version__ = "0.2.0"

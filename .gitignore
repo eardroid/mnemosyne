@@ -1,8 +1,15 @@
-.env
-*.db
+# Python
 __pycache__/
 *.pyc
-.DS_Store
+.venv/
 venv/
-*.cast
+
+# Databases created at runtime
+*.db
+mnemosyne.db
 test_mnemosyne.db
+
+# Editor / OS noise
+.DS_Store
+*.log
+.env
