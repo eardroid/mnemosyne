@@ -26,7 +26,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-# Make `python mnemosyne/guard.py` work from the repo root.
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from mnemosyne.detector import score_text, local_llm_second_defense
@@ -35,11 +35,8 @@ from mnemosyne.sqlite_memory import SqliteMemory
 from mnemosyne.semantic import semantic_second_defense
 
 
-# Where the source of the memory came from maps to a trust level.
-# Anything not listed is treated as low trust (the safe default).
 HIGH_TRUST_SOURCES = {"system", "admin", "internal"}
 MEDIUM_TRUST_SOURCES = {"user", "colleague", "document"}
-# everything else -> "low"
 
 
 def score_trust(source: str) -> str:
@@ -76,7 +73,7 @@ class SimpleMemory:
         return mem_id
 
     def search(self, query: str) -> list[dict]:
-        # Very naive: return anything whose text shares a word with the query.
+
         q_words = set(query.lower().split())
         return [
             m for m in self._items
@@ -99,19 +96,19 @@ class MemoryGuard:
 
     def __init__(self, ledger: Ledger | None = None, memory=None) -> None:
         self.ledger = ledger if ledger is not None else Ledger()
-        # Default store is now SQLite-backed, so memories survive a restart.
-        # Pass memory=SimpleMemory() if you want the RAM-only version.
+
+
         self.memory = memory if memory is not None else SqliteMemory()
 
-    # -- the two building blocks -------------------------------------------------
+
     def check(self, content: str, source: str = "unknown") -> dict:
         """Analyse a piece of text WITHOUT storing it. Safe to call freely."""
         trust = score_trust(source)
         try:
             result = score_text(content)
-        except Exception as exc:  # detector should never throw, but if it does:
+        except Exception as exc:
             result = {
-                "is_attack": True,  # FAIL CLOSED
+                "is_attack": True,
                 "score": 1.0,
                 "attack_type": "detector_error",
                 "matched": [],
@@ -157,13 +154,8 @@ class MemoryGuard:
             status = "BLOCKED"
             block_reason = result["reason"]
         else:
-            # Grey zone: the rule score is below the block line, but not
-            # clearly benign either. Optional tie-breakers can TIGHTEN a
-            # borderline STORED into BLOCKED, but ONLY that direction:
-            #   - local LLM (Ollama) — fully offline, no key
-            #   - offline semantic scorer (fastembed + local model)
-            # Either one missing / errored / offline is simply ignored and
-            # the rule verdict (STORED) stands. Neither can ever un-block.
+
+
             status = "STORED"
             block_reason = None
             secondary_said_block = False
@@ -193,8 +185,8 @@ class MemoryGuard:
             try:
                 self.memory.add(content)
             except Exception as exc:
-                # Could not write to the store -> do NOT silently lose the
-                # event. Mark blocked so we never pretend it was saved.
+
+
                 status = "BLOCKED"
                 block_reason = f"memory store rejected the write: {exc}"
 
@@ -222,7 +214,7 @@ class MemoryGuard:
 
 
 if __name__ == "__main__":
-    # A tiny self-contained smoke test you can run with `python mnemosyne/guard.py`
+
     guard = MemoryGuard()
     cases = [
         ("TechSupplies Inc legitimate account is ACC-1234-LEGIT", "internal"),

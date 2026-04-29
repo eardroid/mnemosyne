@@ -27,9 +27,7 @@ app = Flask(
     static_folder=str(Path(__file__).parent / "static"),
 )
 
-# One shared guard for the whole server. Default store is SQLite-backed
-# (memories persist across restarts). Swap SimpleMemory() in if you want
-# RAM-only behaviour for a throwaway demo.
+
 guard = MemoryGuard(memory=SqliteMemory())
 
 SEED_MEMORIES = [

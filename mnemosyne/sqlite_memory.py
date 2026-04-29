@@ -39,9 +39,8 @@ class SqliteMemory:
         return cur.lastrowid
 
     def search(self, query: str) -> list[dict]:
-        # Simple word-overlap search; good enough for a demo, not a real
-        # semantic search. (That would be the embeddings step we mention
-        # in the README as future work.)
+
+
         q_words = set(query.lower().split())
         rows = self._conn.execute("SELECT id, memory FROM memories").fetchall()
         return [

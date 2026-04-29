@@ -13,8 +13,7 @@ import hashlib
 import sqlite3
 from datetime import datetime, timezone
 
-# The "previous hash" of the very first row. We just hard-code a
-# recognizable seed value so the chain has a starting point.
+
 GENESIS = "GENESIS"
 
 
@@ -22,9 +21,8 @@ class Ledger:
     """Stores memory-write events in a small SQLite database."""
 
     def __init__(self, db_path: str = "mnemosyne.db"):
-        # check_same_thread=False lets the web server (which uses
-        # multiple threads) share one connection. For a student demo
-        # this is fine; a bigger app would use a connection pool.
+
+
         self._conn = sqlite3.connect(db_path, check_same_thread=False)
         self._conn.row_factory = sqlite3.Row
         self._conn.execute(
@@ -142,9 +140,9 @@ class Ledger:
                 row["content"].encode("utf-8")
             ).hexdigest()
             if actual_content_hash != row["content_hash"]:
-                return False  # content was edited after the fact
+                return False
             if row["prev_hash"] != expected_prev:
-                return False  # chain was broken / reordered
+                return False
             expected_prev = row["content_hash"]
         return True
 

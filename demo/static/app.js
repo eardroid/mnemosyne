@@ -1,5 +1,3 @@
-// app.js — wiring for the Mnemosyne web demo. Plain fetch() calls.
-
 async function api(path, body) {
   const opts = { method: "GET", headers: { "Content-Type": "application/json" } };
   if (body) { opts.method = "POST"; opts.body = JSON.stringify(body); }
@@ -78,7 +76,7 @@ async function refresh() {
         <div class="explain">${prev}</div>
       </div>`;
     }).join("") || `<div class="explain">No events yet.</div>`;
-  } catch (e) { /* ignore refresh errors */ }
+  } catch (e) { }
 }
 
 async function resetAll() {
@@ -87,6 +85,5 @@ async function resetAll() {
   catch (e) { alert(e.message); }
 }
 
-// refresh on load + every 3 seconds so the ledger stays live
 refresh();
 setInterval(refresh, 3000);

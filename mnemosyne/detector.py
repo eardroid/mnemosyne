@@ -25,13 +25,6 @@ and we say so in the README.
 from __future__ import annotations
 
 
-# Each rule is: (human label, list of plain substrings to look for).
-# Matching is case-insensitive. A phrase is intentionally a short string
-# fragment, not a full sentence, so it is hard to accidentally skip.
-#
-# We aim to catch OBVIOUSLY suspicious phrasings. We do NOT try to catch
-# cleverly reworded attacks (e.g. "remittance destination revised") — see
-# the evaluation report, which measures exactly that gap.
 ATTACK_SIGNALS: list[tuple[str, list[str]]] = [
     ("payment_redirect", [
         "payment should go to", "payments should now route",
@@ -87,15 +80,10 @@ ATTACK_SIGNALS: list[tuple[str, list[str]]] = [
     ]),
 ]
 
-# Weight per matched signal. A single LOW-intent signal (e.g. just the
-# word "urgent") is not enough on its own; it adds a little.
+
 WEIGHT_PER_SIGNAL = 0.18
 
-# A single HIGH-INTENT signal (payment redirect, banking change, authority
-# override, fake approval, impersonation) is itself enough to be suspicious
-# — one clear "send payment to" or "ignore previous instructions" should
-# already flag. So any high-intent hit floors the score at 0.60 (above the
-# 0.50 flag line).
+
 HIGH_INTENT_LABELS = {"payment_redirect", "banking_change",
                        "authority_override", "false_approval", "impersonation"}
 HIGH_INTENT_FLOOR = 0.60
@@ -131,10 +119,10 @@ def score_text(text: str) -> dict:
         matched.append({"label": label, "snippet": hits[0]})
         raw_score += WEIGHT_PER_SIGNAL
         if label in HIGH_INTENT_LABELS:
-            # One clear high-intent phrase is already worth flagging.
+
             raw_score = max(raw_score, HIGH_INTENT_FLOOR)
 
-        # Track the "strongest" category for the attack_type label.
+
         weight = WEIGHT_PER_SIGNAL + (
             (HIGH_INTENT_FLOOR - WEIGHT_PER_SIGNAL) if label in HIGH_INTENT_LABELS else 0.0
         )
@@ -178,41 +166,14 @@ def _empty_result(note: str) -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
-# Note: the LLM tie-breaker is now a LOCAL model via Ollama — see
-# local_llm_second_defense() below. It is fully offline (no API key) and
-# is used only to TIGHTEN a borderline verdict, never to judge. The old
-# Groq-based commentary function was removed; the local model replaces it.
-# ---------------------------------------------------------------------------
-
-
-# ---------------------------------------------------------------------------
-# Optional SECONDARY defense: a LOCAL LLM (Ollama) as a tie-breaker.
-# ---------------------------------------------------------------------------
-# The rule scorer (+ offline semantic layer) is the authority. A local LLM
-# is only allowed to TIGHTEN a borderline call: if the rule score is in the
-# grey zone (not clearly benign, not clearly flagged) AND the model says
-# "yes, this is an attack", we block. The LLM can NEVER turn a BLOCKED into
-# STORED, and any error / Ollama not installed / server down returns None ->
-# the rule verdict stands unchanged. This is the fix for the original
-# project's bug, where the LLM could (wrongly) override a safe decision.
-#
-# Why Ollama and not a hosted API (Groq/OpenAI)?
-#   - Runs fully OFFLINE, no API key, no quota, no network on the critical
-#     path. So it can run on every write, not just the grey zone.
-#   - We deliberately keep it a tie-breaker, NOT a judge: a local model is
-#     still prompt-injectable and non-deterministic, so the deterministic
-#     rules always decide first and the model can only ever tighten.
-#   - We talk to Ollama over its local REST API (http://localhost:11434),
-#     so there is NO extra Python dependency to install.
 import json
 import urllib.request
 import urllib.error
 
 OLLAMA_BASE_URL = "http://localhost:11434"
-OLLAMA_MODEL = "gemma3:4b"  # small, local, offline
-GREY_ZONE_LOW = 0.0    # act on anything the rules did NOT already block
-GREY_ZONE_HIGH = 0.50  # at/above this the rule already blocks -> no LLM needed
+OLLAMA_MODEL = "gemma3:4b"
+GREY_ZONE_LOW = 0.0
+GREY_ZONE_HIGH = 0.50
 
 
 def local_llm_second_defense(text: str, rule_score: float,
@@ -256,6 +217,6 @@ def local_llm_second_defense(text: str, rule_score: float,
             return None
         return bool(json.loads(content[start:end + 1]).get("is_attack", False))
     except Exception:
-        # Ollama not installed, server down, timeout, bad JSON -> no opinion.
-        # Rule verdict stands. We NEVER translate "LLM broke" into "safe".
+
+
         return None
