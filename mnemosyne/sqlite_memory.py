@@ -1,11 +1,11 @@
-"""sqlite_memory.py — a memory store that survives restarts.
+"""sqlite_memory.py - a memory store that survives restarts.
 
 This is a drop-in replacement for SimpleMemory in guard.py. Same three
 methods (add / search / get_all), but the data lives in a SQLite file
 instead of RAM, so the agent still "remembers" after the program exits.
 
 Why SQLite and not Mem0/Postgres? Because it needs zero setup, zero
-keys, and zero server — just a file. That keeps the project student-level
+keys, and zero server - just a file. That keeps the project student-level
 while making the "the agent remembers" story real.
 """
 

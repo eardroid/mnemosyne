@@ -1,4 +1,4 @@
-"""mnemosyne — memory-poisoning guard for AI agents (student project).
+"""mnemosyne - memory-poisoning guard for AI agents (student project).
 
 Import the two things you need:
     from mnemosyne.guard import MemoryGuard

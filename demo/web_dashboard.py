@@ -1,4 +1,4 @@
-"""web_dashboard.py — a small Flask app to click through the guard.
+"""web_dashboard.py - a small Flask app to click through the guard.
 
 Run it with:   python demo/web_dashboard.py
 Then open:       http://localhost:5000
@@ -7,7 +7,7 @@ This is a teaching UI. The memory store behind it is the SQLite-backed
 SqliteMemory from mnemosyne.guard, so memories survive a restart and it
 all works offline with no API keys. The detector is the offline rule
 scorer. There is an OPTIONAL local-LLM (Ollama) "secondary defense" you
-can enable by running Ollama with a model pulled — it can only TIGHTEN a
+can enable by running Ollama with a model pulled - it can only TIGHTEN a
 borderline stored write into a block, and it is ignored on any error.
 """
 

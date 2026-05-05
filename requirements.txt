@@ -1,9 +1,9 @@
 rich>=13.0
 flask>=3.0
 pytest>=7.0
-# Optional — only needed for the offline semantic tie-breaker.
+# Optional - only needed for the offline semantic tie-breaker.
 # Pure ONNX, no torch, no API key. Downloads a ~90MB model on first use.
 # fastembed>=0.3
-# Optional — the local LLM tie-breaker uses Ollama (a separate install,
+# Optional - the local LLM tie-breaker uses Ollama (a separate install,
 # not a pip package). No Python dependency: we call Ollama's local REST
 # API. Install Ollama, then `ollama pull gemma3:4b` (or any small model).

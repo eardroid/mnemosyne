@@ -1,4 +1,4 @@
-"""evaluation.py — measure how well the detector actually performs.
+"""evaluation.py - measure how well the detector actually performs.
 
 The README is honest that the rule-based scorer misses reworded attacks.
 This module turns that claim into NUMBERS instead of hand-waving.
@@ -81,7 +81,7 @@ def evaluate(threshold: float = THRESHOLD) -> dict:
 def _print_report(r: dict) -> None:
     pct = lambda x: f"{x * 100:.1f}%"
     print("=" * 52)
-    print("  Mnemosyne detector — evaluation on labeled data")
+    print("  Mnemosyne detector - evaluation on labeled data")
     print("=" * 52)
     print(f"  Examples : {r['total']}")
     print(f"  TP={r['tp']}  FP={r['fp']}  TN={r['tn']}  FN={r['fn']}")
@@ -100,7 +100,7 @@ def _print_report(r: dict) -> None:
     print("=" * 52)
     print("  Note: the misses above are the reworded/obfuscated")
     print("  attacks the rule scorer is NOT designed to catch. That is")
-    print("  the known limitation — not a bug to hide.")
+    print("  the known limitation - not a bug to hide.")
     print("=" * 52)
 
 

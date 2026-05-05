@@ -2,7 +2,7 @@
 
 These run only if fastembed + the local model are available (they are
 optional). If the model can't load (no internet on first run, no fastembed
-installed), the tests skip instead of failing — the project must stay
+installed), the tests skip instead of failing - the project must stay
 usable without ML dependencies.
 """
 

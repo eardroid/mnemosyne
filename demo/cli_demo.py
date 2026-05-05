@@ -1,4 +1,4 @@
-"""cli_demo.py — a short terminal walkthrough of the guard.
+"""cli_demo.py - a short terminal walkthrough of the guard.
 
 Run it with:   python demo/cli_demo.py
 
@@ -50,7 +50,7 @@ def main() -> None:
     console.print()
     console.print(
         Panel(
-            "[bold cyan]Mnemosyne — terminal demo[/bold cyan]\n"
+            "[bold cyan]Mnemosyne - terminal demo[/bold cyan]\n"
             "[dim]Memory-poisoning guard. Runs fully offline.[/dim]",
             border_style="cyan",
             expand=False,
@@ -58,16 +58,16 @@ def main() -> None:
     )
     console.print()
 
-    console.print("[bold]Step 1 — agent stores legitimate memories[/bold]")
+    console.print("[bold]Step 1 - agent stores legitimate memories[/bold]")
     for m in GOOD_MEMORIES:
         _badge(guard.safe_add(m, source="internal"))
 
     console.print()
-    console.print("[bold]Step 2 — an attacker tries to poison the memory[/bold]")
+    console.print("[bold]Step 2 - an attacker tries to poison the memory[/bold]")
     _badge(guard.safe_add(ATTACK, source="email"))
 
     console.print()
-    console.print("[bold]Step 3 — forensic ledger (tamper-evident)[/bold]")
+    console.print("[bold]Step 3 - forensic ledger (tamper-evident)[/bold]")
     table = Table(box=box.ROUNDED, expand=False)
     table.add_column("ID", style="dim")
     table.add_column("Status")
@@ -84,7 +84,7 @@ def main() -> None:
             row["trust_level"],
             f"{row['confidence']:.2f}",
             row["source"],
-            (row["content"][:42] + ("…" if len(row["content"]) > 42 else "")),
+            (row["content"][:42] + ("..." if len(row["content"]) > 42 else "")),
         )
     console.print(table)
 

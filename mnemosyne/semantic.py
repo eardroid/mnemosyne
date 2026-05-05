@@ -1,4 +1,4 @@
-"""semantic.py — a lightweight, OFFLINE semantic second-opinion.
+"""semantic.py - a lightweight, OFFLINE semantic second-opinion.
 
 WHY THIS EXISTS
 ---------------
@@ -86,7 +86,7 @@ GREY_ZONE_HIGH = 0.50
 class SemanticScorer:
     """Lazy, offline semantic tie-breaker.
 
-    Safe to construct even without fastembed installed — it only tries to
+    Safe to construct even without fastembed installed - it only tries to
     load the model on first use, and `score()` returns None on any failure
     so the caller can ignore it.
     """

@@ -1,4 +1,4 @@
-"""ledger.py — an append-only log of every memory write.
+"""ledger.py - an append-only log of every memory write.
 
 This is the "paper trail" part of the project. Every time the guard
 looks at a piece of text (whether it ends up stored or blocked), we

@@ -1,4 +1,4 @@
-"""run_eval.py — convenience runner for the evaluation harness.
+"""run_eval.py - convenience runner for the evaluation harness.
 
 Usage:  python demo/run_eval.py
 (equivalent to `python -m mnemosyne.evaluation`)

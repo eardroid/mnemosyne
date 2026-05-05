@@ -1,4 +1,4 @@
-"""guard.py — the decision maker and the public API of the project.
+"""guard.py - the decision maker and the public API of the project.
 
 A "MemoryGuard" sits between an AI agent and its memory store. Before any
 text is saved, the guard:

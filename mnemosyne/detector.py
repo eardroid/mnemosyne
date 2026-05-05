@@ -1,4 +1,4 @@
-"""detector.py — the part that decides "does this text look like an attack?".
+"""detector.py - the part that decides "does this text look like an attack?".
 
 IMPORTANT, READ THIS FIRST
 --------------------------------
@@ -136,13 +136,13 @@ def score_text(text: str) -> dict:
         reason = (
             f"Matched {len(matched)} suspicion signal(s): {names}. "
             "This is the kind of language used in memory-poisoning attacks, "
-            "but a human should confirm — rule-based checks miss rephrasings."
+            "but a human should confirm - rule-based checks miss rephrasings."
         )
     else:
         reason = (
             "No suspicion signals matched. NOTE: this only means the text "
             "did not use any of the known dangerous phrases. It is NOT proof "
-            "the text is safe — novel attacks can be written to dodge these."
+            "the text is safe - novel attacks can be written to dodge these."
         )
 
     return {

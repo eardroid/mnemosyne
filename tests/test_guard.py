@@ -1,4 +1,4 @@
-"""tests/test_guard.py — real unit tests, no API keys needed.
+"""tests/test_guard.py - real unit tests, no API keys needed.
 
 Run with:  pytest  (from the repo root, with the venv active)
 

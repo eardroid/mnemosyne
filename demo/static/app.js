@@ -11,7 +11,7 @@ async function api(path, body) {
 
 function setStatus(r) {
   const cls = r.status === "STORED" ? "stored" : "blocked";
-  const labels = (r.matched_labels || []).join(", ") || "—";
+  const labels = (r.matched_labels || []).join(", ") || "-";
   return `
     <div class="row">
       <span class="tag ${cls}">${r.status}</span>
