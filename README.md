@@ -134,4 +134,4 @@ Makes sense, single weak phrases only score 0.18 so they stay under 0.5, and spa
 
 ## License
 
-Do whatever you want with it.
+MIT, see LICENSE.
