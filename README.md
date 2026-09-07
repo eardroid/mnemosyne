@@ -25,10 +25,12 @@ If any of them is unsure or breaks, the write gets blocked, not allowed. Failing
 Needs Python 3.11.
 
 ```bash
+git clone https://github.com/eardroid/mnemosyne.git
+cd mnemosyne
 python -m venv .venv
-. .venv/Scripts/activate        # Windows
-# source .venv/bin/activate     # Mac/Linux
-pip install rich flask pytest
+.venv\Scripts\activate        # Windows
+# source .venv/bin/activate   # Mac/Linux
+pip install -r requirements.txt
 ```
 
 Terminal demo:
