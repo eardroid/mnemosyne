@@ -1,12 +1,13 @@
 """evaluation.py - measure how well the detector actually performs.
 
-The README is honest that the rule-based scorer misses reworded attacks.
-This module turns that claim into NUMBERS instead of hand-waving.
+Two sets, two jobs:
+  DATASET   the original 20 hand-written examples. This is the DEV set:
+            tune rules against it freely.
+  heldout.TEST_SET  100 frozen examples (50 attack / 50 benign) written
+            afterwards. NEVER tune rules against it. It measures whether
+            the phrases generalize, not whether we memorized them.
 
-A small hand-labeled dataset lives here: each example is (text, label)
-where label is True for a memory-poisoning attempt and False for benign.
-
-Run it with:  python -m mnemosyne.evaluation
+Run with:  python -m mnemosyne.evaluation
 (or:  python demo/run_eval.py  from the repo root)
 """
 
@@ -47,12 +48,19 @@ DATASET: list[tuple[str, bool]] = [
 ]
 
 
-def evaluate(threshold: float = THRESHOLD) -> dict:
-    """Run the detector over the dataset and return confusion counts + scores."""
+def evaluate(threshold: float = THRESHOLD, dataset: list | None = None) -> dict:
+    """Run the detector over a dataset and return confusion counts + scores.
+
+    dataset is a list of (text, label) or (text, label, family) tuples.
+    Defaults to DATASET (the dev set) so old callers keep working.
+    """
+    rows = dataset if dataset is not None else DATASET
     tp = fp = tn = fn = 0
     misses: list[str] = []
+    false_alarms: list[str] = []
 
-    for text, is_attack in DATASET:
+    for row in rows:
+        text, is_attack = row[0], row[1]
         predicted = score_text(text)["score"] >= threshold
         if is_attack and predicted:
             tp += 1
@@ -61,6 +69,7 @@ def evaluate(threshold: float = THRESHOLD) -> dict:
             misses.append(text)
         elif (not is_attack) and predicted:
             fp += 1
+            false_alarms.append(text)
         else:
             tn += 1
 
@@ -70,18 +79,19 @@ def evaluate(threshold: float = THRESHOLD) -> dict:
     accuracy = (tp + tn) / len(DATASET) if DATASET else 0.0
 
     return {
-        "total": len(DATASET),
+        "total": len(rows),
         "tp": tp, "fp": fp, "tn": tn, "fn": fn,
         "precision": precision, "recall": recall,
         "f1": f1, "accuracy": accuracy,
         "misses": misses,
+        "false_alarms": false_alarms,
     }
 
 
-def _print_report(r: dict) -> None:
+def _print_report(r: dict, title: str = "Mnemosyne detector - evaluation on labeled data") -> None:
     pct = lambda x: f"{x * 100:.1f}%"
     print("=" * 52)
-    print("  Mnemosyne detector - evaluation on labeled data")
+    print(f"  {title}")
     print("=" * 52)
     print(f"  Examples : {r['total']}")
     print(f"  TP={r['tp']}  FP={r['fp']}  TN={r['tn']}  FN={r['fn']}")
@@ -97,6 +107,10 @@ def _print_report(r: dict) -> None:
             print(f"    - {m}")
     else:
         print("  No attacks missed.")
+    if r["false_alarms"]:
+        print(f"  Benign FLAGGED ({len(r['false_alarms'])}):")
+        for m in r["false_alarms"]:
+            print(f"    - {m}")
     print("=" * 52)
     print("  Note: the misses above are the reworded/obfuscated")
     print("  attacks the rule scorer is NOT designed to catch. That is")
@@ -105,4 +119,14 @@ def _print_report(r: dict) -> None:
 
 
 if __name__ == "__main__":
-    _print_report(evaluate())
+    _print_report(evaluate(), "Dev set (20 tuning examples)")
+    try:
+        from mnemosyne.heldout import TEST_SET
+    except ImportError:
+        TEST_SET = None
+    if TEST_SET is not None:
+        print()
+        _print_report(
+            evaluate(dataset=[(t, l) for t, l, _ in TEST_SET]),
+            "Frozen held-out set (100 examples, rules untouched)",
+        )
