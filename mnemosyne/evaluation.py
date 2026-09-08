@@ -76,7 +76,7 @@ def evaluate(threshold: float = THRESHOLD, dataset: list | None = None) -> dict:
     precision = tp / (tp + fp) if (tp + fp) else 1.0
     recall = tp / (tp + fn) if (tp + fn) else 1.0
     f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) else 0.0
-    accuracy = (tp + tn) / len(DATASET) if DATASET else 0.0
+    accuracy = (tp + tn) / len(rows) if rows else 0.0
 
     return {
         "total": len(rows),
